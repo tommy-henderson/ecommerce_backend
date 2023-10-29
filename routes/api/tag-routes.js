@@ -80,14 +80,14 @@ router.delete('/:id', (req, res) => {
   })
     .then(tagData => {
       if (!tagData) {
-        res.status(404).json({ message: 'No Tag with that ID.' });
+        res.status(404).json({ message: 'No Tag found by that ID.' });
         return;
       }
       res.json(tagData);
     })
     .catch(err => {
       console.log(err);
-      res.status(404).json(err);
+      res.status(500).json(err);
     });
 });
 

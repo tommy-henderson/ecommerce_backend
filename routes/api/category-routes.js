@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
    }
   }
   )
-  .then(catData => res.json(catData))
+  .then(categoryData => res.json(categoryData))
     .catch(err => {
       console.log(err);
       res.status(404).json(err);
@@ -23,13 +23,14 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   // find one category by its `id` value
   Category.findOne({
+    where: {id: req.params.id},
     // be sure to include its associated Products
     include: {
       model: Product,
       attributes: ['category_id']
     }
   })
-  .then(catData => res.json(catData))
+  .then(categoryData => res.json(categoryData))
   .catch(err => {
     console.log(err);
     res.status(404).json(err);
@@ -41,7 +42,7 @@ router.post('/', (req, res) => {
   Category.create({
     category_name: req.body.category_name
   })
-  .then(catData => res.json(catData))
+  .then(categoryData => res.json(categoryData))
     .catch(err => {
       console.log(err);
       res.status(404).json(err);
@@ -53,17 +54,15 @@ router.put('/:id', (req, res) => {
   Category.update({
     category_name: req.body.category_name
   }, {
-    where: {
-      id: req.params.id
-    }
+    where: {id: req.params.id}
   }
   )
-  .then(catData => {
-    if (!catData) {
+  .then(categoryData => {
+    if (!categoryData) {
       res.status(404).json({ message: 'No data for that category number' });
       return;
     }
-    res.json(catData);
+    res.json(categoryData);
   })
   .catch(err => {
     console.log(err);
@@ -74,16 +73,14 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   // delete a category by its `id` value
   Category.destroy({
-    where: {
-      id: req.params.id
-    }
+    where: {id: req.params.id}
   })
-    .then(catData => {
-      if (!catData) {
+    .then(categoryData => {
+      if (!categoryData) {
         res.status(404).json({ message: 'No data found for that category ID.' });
         return;
       }
-      res.json(catData);
+      res.json(categoryData);
     })
     .catch(err => {
       console.log(err);

@@ -21,7 +21,7 @@ router.get('/', (req, res) => {
       ]
     }
   )
-    .then(prodData => res.json(prodData))
+    .then(productData => res.json(productData))
     .catch(err => {
       console.log(err);
       res.status(404).json(err);
@@ -32,9 +32,7 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   // find a single product by its `id`
   Product.findOne({
-    where: {
-      id: req.params.id
-    },
+    where: {id: req.params.id},
     // be sure to include its associated Category and Tag data
     include: [{
       model: Category,
@@ -46,7 +44,7 @@ router.get('/:id', (req, res) => {
     }
     ]
   })
-    .then(prodData => res.json(prodData))
+    .then(productData => res.json(productData))
     .catch(err => {
       console.log(err);
       res.status(404).json(err);
@@ -63,7 +61,14 @@ router.post('/', (req, res) => {
       tagIds: [1, 2, 3, 4]
     }
   */
-  Product.create(req.body)
+  //Product.create(req.body)
+  Product.create({
+    product_name: req.body.product_name,
+    price: req.body.price,
+    stock: req.body.stock,
+    category_id: req.body.category_id,
+    tagIds: req.body.tagIds
+    })
     .then((product) => {
       // if there's product tags, we need to create pairings to bulk create in the ProductTag model
       if (req.body.tagIds.length) {
@@ -75,7 +80,6 @@ router.post('/', (req, res) => {
         });
         return ProductTag.bulkCreate(productTagIdArr);
       }
-      // if no product tags, just respond
       res.status(200).json(product);
     })
     .then((productTagIds) => res.status(200).json(productTagIds))
@@ -89,9 +93,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   // update product data
   Product.update(req.body, {
-    where: {
-      id: req.params.id,
-    },
+    where: {id: req.params.id},
   })
     .then((product) => {
       if (req.body.tagIds && req.body.tagIds.length) {
@@ -136,12 +138,12 @@ router.delete('/:id', (req, res) => {
       id: req.params.id
     }
   })
-    .then(prodData => {
-      if (!prodData) {
+    .then(productData => {
+      if (!productData) {
         res.status(404).json({ message: 'No product with that ID' });
         return;
       }
-      res.json(prodData);
+      res.json(productData);
     })
     .catch(err => {
       console.log(err);
