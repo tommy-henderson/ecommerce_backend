@@ -11,7 +11,8 @@ router.get('/', (req, res) => {
     model: Product,
     attributes: ['product_name']
    }
-  })
+  }
+  )
   .then(catData => res.json(catData))
     .catch(err => {
       console.log(err);
